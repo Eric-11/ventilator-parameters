@@ -1,5 +1,5 @@
 # ventilator-parameters
-Numerical model to simulate ventilator airway pressures and extract key parameters
+Numerical model to simulate ventilator airway pressures and extract key parameters using simple methods that should not be too resource intensive. This code is non-optimized and is currently in a proof-of-concept testing stage.
 
 This is a rapid prototype using python3 to process sample data from a differential pressure gauge and compute some of the values. This simulation is based on model data found on the internet and extracted to csv files. These models are setup to be scaled easily for peak, respiration rate, and peep values.
 
@@ -10,7 +10,7 @@ Licensed under GNU GPL-3. You have the freedom to do whatever with this code exc
 model.py loads the selected numerical values from the ./models/ folder.  It can also scale and will simulate a live sensor. At this point no radomization has been added to the model, but it will be added soon. Also there are only two models, one well behaved and one with large peak vs. plateau values.
 
 # Monitor.py
-This preforms all the sampling of the model and will then parse, compute and display the results. It can be plotted using matplotlib or the results are printed to the console using pprint library.
+This performs all the sampling from model.py and will then parse, compute and display the results. It can be plotted using matplotlib or the results are printed to the console using pprint library.
 
 ## What does the code do?
 
