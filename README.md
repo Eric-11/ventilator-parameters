@@ -15,22 +15,22 @@ This performs all the sampling from model.py and will then parse, compute and di
 ## What does the code do?
 
 * Measures the following signals:  
-        * PEEP: PEEP pressure
-        * PEEPi: Intrinsic PEEP presure
-        * Ppeak: Peak pressure
-        * FlowI: Inspiratory inflow time
-        * Ipause: Inspiry pause time
-        * FlowE: Expiratory flow time
-        * Epause: Expiratory pause time
-        * Pplat: Plateau Pressure
-        * Start: start time of cycle
-        * End: end time of cycle
-        * Vt: tidal volume - @TODO - not measured
-        * dP: driving pressure
-        * Pl: transpulmonary pressure - @TODO - not computed yet
-        * P01: Occlusion pressure
-        * PTP: pressure-time product per breath cycle
-        * RR: breaths per min. based on current cycle speed
+ * PEEP: PEEP pressure
+ * PEEPi: Intrinsic PEEP presure
+ * Ppeak: Peak pressure
+ * FlowI: Inspiratory inflow time
+ * Ipause: Inspiry pause time
+ * FlowE: Expiratory flow time
+ * Epause: Expiratory pause time
+ * Pplat: Plateau Pressure
+ * Start: start time of cycle
+ * End: end time of cycle
+ * Vt: tidal volume - @TODO - not measured
+ * dP: driving pressure
+ * Pl: transpulmonary pressure - @TODO - not computed yet
+ * P01: Occlusion pressure
+ * PTP: pressure-time product per breath cycle
+ * RR: breaths per min. based on current cycle speed
 * It can detect respiration cycles in the data automatically.
 * Each cycle is parsed and analyzed separetly
 * Parameters from each cycle is stored in a list of dictionaries for experimentation
