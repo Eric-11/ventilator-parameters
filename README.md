@@ -11,6 +11,10 @@ model.py loads the selected numerical values from the ./models/ folder.  It can 
 
 *Now has the ability to specify some randomness in the peak and peep values between breaths just to test the algorithm. On the model "b40-peep0-30s.csv" that is irregular occasionally the plateau is missed which is something I'm still fine tuning.*
 
+Thanks to https://github.com/hahnicity/ventmode we now have some real pressure and flow data. The models are in /models/raw_cvs and is the same data used in their paper: "Improving Mechanical Ventilator Clinical Decision Support Systems with a Machine Learning Classifier for Determining Ventilator Mode." by Rehm, Gregory B and Kuhn, Brooks T and Nguyen, Jimmy and Anderson, Nicholas R and Chuah, Chen Nee and Adams, Jason Yeates.
+
+This new dataset has not been tested yet, but theoretically should work with little or no modification.
+
 # Monitor.py
 This performs all the sampling from model.py and will then parse, compute and display the results. It can be plotted using matplotlib or the results are printed to the console using pprint library.
 
