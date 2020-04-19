@@ -6,6 +6,20 @@ This is a rapid prototype using python3 to process sample data from a differenti
 ## licence
 Licensed under GNU GPL-3. You have the freedom to do whatever with this code except distribute it in closed source versions.
 
+# plot_data.py
+plot_data.py will read pressure or flow data from the cvs files as if it was live and display sweeps across the screen. It's just a visualization tool right now but it will be integrated soon into the algorithm.  However it is a good way to browse the data files. You can speed up the sweeps by changing the interval parameter or you can modify the code to seek for spots further into the csv file.  Here's an example run for pressure and flow on raw ventilator data from https://github.com/hahnicity/ventmode/tree/master/anon_test_data/raw_vwd
+
+The green line shows the sweep point through the data and moves from left to right while updating the data from the file.
+
+python3 plot_data.py -p ./raw_vwd/714a529486594682820d174b7201ec86-rpi44-2178-07-06-01-15-55.108964.csv
+
+![plot pressure](/snapshots/press1.png)
+
+python3 plot_data.py -f ./raw_vwd/714a529486594682820d174b7201ec86-rpi44-2178-07-06-01-15-55.108964.csv
+
+![plot flowrate](/snapshots/flow1.png)
+
+
 # Model.py
 model.py loads the selected numerical values from the ./models/ folder.  It can also scale and will simulate a live sensor. At this point no radomization has been added to the model, but it will be added soon. Also there are only two models, one well behaved and one with large peak vs. plateau values.
 
