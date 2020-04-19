@@ -22,6 +22,8 @@ this program. If not, see <https://www.gnu.org/licenses/>.
 from numpy import genfromtxt
 import numpy as np
 import matplotlib.pyplot as plt
+from random import uniform
+import time
 
 
 class BREATH:
@@ -32,6 +34,12 @@ class BREATH:
     peep_min = 0
     max_time = 0  # length of cycle
     filename = ''
+
+    # simulated values
+    bps_sim = 0
+    peak_sim = 0
+    peep_sim = 0
+    prev_sample = 0
 
     def __init__(self, filename="./models/b30-peep0-20s-lowpeak.csv"):
         # csv file with one cycle to be used for simulations
@@ -50,11 +58,29 @@ class BREATH:
         self.peak = max[1]
         self.max_time = max[0]
 
-    def scale(self, bpm=20, peak=30, peep=10):
+    def scale(self, bpm=20, peak=30, peep=10, regenerate=False):
+        """
+        scale model waveform
+
+        bpm (float): breaths per minute
+        peak(float): cm h20 peak pressure
+        peep(float): cm h20 peep pressure
+        regenerate(bool): set true if updating a running sample in progress
+        """
+
         self.load(self.filename)  # reload unscaled and shifted model
+
+        # only store inital setup values
+        # if calling to rescale or randomize set regenerate=true
+        if not regenerate:
+            self.bpm_sim = bpm
+            self.peak_sim = peak
+            self.peep_sim = peep
+
         i = 0
         bps = bpm / 60
         peak = peak - peep
+
         for eachLine in self.breath:
             self.breath[i] = [
                 self.breath[i, 0] * self.bps / bps,
@@ -72,89 +98,6 @@ class BREATH:
         print("PEEP = {:2.1f}, Sample window = {:2.1f}".format(
             self.min, self.max_time))
 
-    def contours(self):
-        """
-        computes assents, dessents and plateaus in wave form
-        """
-        max = np.amax(self.breath, axis=0)
-        max_idx = np.argmax(self.breath, axis=0)
-        min = np.amin(self.breath, axis=0)
-        ave = np.average(self.breath, axis=0)
-        self.min = min[1]  # floor of pressure readings (PEEP)
-        self.bps = 1 / max[0]  # bps  - data has one breath
-        self.peak = max[1]
-        self.max_time = max[0]
-        print("Model rate BPM = {:2.1f}, Model Peak Pressure = {:2.1f} cm H2O".
-              format(self.bps * 60, self.peak))
-        print("PEEP = {:2.1f}, Sample window = {:2.1f}".format(
-            self.min, self.max_time))
-        print("Average = {:2.1f}".format(ave[1]))
-
-        diff = np.diff(self.breath[:, 1])
-        gradient = np.sign(diff)
-
-        fig = plt.figure()
-        ax1 = fig.add_subplot(1, 1, 1)
-
-        xar = []
-        yar = []
-        for eachLine in self.breath:
-            if len(eachLine) > 1:
-                y = eachLine[0]
-                yar.append(float(y))
-        # waveform
-        ax1.plot(yar, self.breath[:, 1])
-
-        # average
-        ax1.plot([yar[0], yar[-1]], [ave[1], ave[1]], 'r--')
-
-        # max point
-        i = np.argmax(self.breath, axis=0)
-        ax1.plot([self.breath[i[1]][0]], [max[1]], 'ro')
-        ax1.text(self.breath[i[1]][0], max[1] * 1.02, "Peak")
-        # boundary around peak
-        # ax1.plot([yar[0], yar[-1]], [max[1] * 1.05, max[1] * 1.05], 'b--')
-        # ax1.plot([yar[0], yar[-1]], [max[1] * 0.95, max[1] * 0.95], 'g--')
-
-        # drop one y-axis point for plotting differential
-        yar.pop()
-        ax1.plot(yar, diff)
-        diff_max = np.amax(diff)
-        diff_min = np.amin(diff)
-        i = np.argmax(diff)  # finds index for max point
-        j = np.argmin(diff)  # finds index for min point
-        ax1.plot([yar[i], yar[i]], [0, max[1]], 'p-')  # start of rise
-        ax1.plot([yar[j], yar[j]], [0, max[1]], 'y-')  # start of fall
-        ax1.text(yar[j], self.breath[j][1], "Plateau")
-
-        # search between max diff and min diff point for slope changes
-        # look for where the slope drops by a factor of the peak
-        for x in range(i, j):
-            if diff[x] <= diff_max / 5:  # slope slows by this factor
-                break
-        diff_max_idx = x
-        ax1.plot([yar[x], yar[x]], [0, max[1]], 'p-')  # end of rise
-
-        # search after min diff point for slope changes
-        # look for where the slope drops by a factor of the peak
-        for x in range(j, len(yar)):
-            if diff[x] >= diff_min / 5:  # slope slows by this factor
-                break
-        diff_min_idx = x
-        ax1.plot([yar[x], yar[x]], [0, max[1]], 'y-')  # end of rise
-
-        # inspiry time
-        print(max)
-        print("Inspiratory flow time: {:2.1f} s".format(yar[max_idx[1]] -
-                                                        yar[i]))
-        # inspiry time
-        print("Inspiry pause time: {:2.1f} s".format(yar[j] - yar[max_idx[1]]))
-        # expiratory flow time
-        print("Expiratory flow time: {:2.1f} s".format(yar[diff_min_idx] -
-                                                       yar[j]))
-
-        plt.show()
-
     def plot_breath(self):
 
         fig = plt.figure()
@@ -170,22 +113,74 @@ class BREATH:
         ax1.plot(xar, yar)
         plt.show()
 
-    def get_simulated_data(self, time):
+    def get_simulated_data(self, time, random=[0, 0, 0]):
         """
         Returns simulated reading from sensor
         time is in seconds and will be scaled to fit data model timeframe.
         Data returned is linearly interpolated for any time value and
         will roll over to beginning of the model automatically.
-        """
 
-        time = time % self.max_time  # scale to data model time
-        xinterp = np.interp(time, self.breath[:, 0], self.breath[:, 1])
+        time is in seconds, just so the model knows where in the waveform
+        to provide a sample.
+
+        random is the percentage of [bpm, peak, peep] to randomize after
+        breath cycle. bpm is breaths per minute, peak is the peak pressure
+        and peep is the positive end exhalation pressure.
+        random = [bpm, peak, peep] for example:
+        random = [5,1,3] would be a 5% variation in bpm, 1% in peak and
+        3% in peep value.
+
+        NOTE: random bpm is not working now because the changes in sample 
+        window need to be padded to avoid discontinuities.
+
+        The sample cycle may lag when a new waveform is generated.
+        """
+        if (time // self.max_time) > (self.prev_sample // self.max_time):
+            if not (all(x == 0 for x in random)):
+                # *** SCALING BPM doesn't work right now because it ***
+                # *** Causes discontinuities in the waveform due to ***
+                # *** model and sample time missmatches -- padding  ***
+                # *** needed to make this work                      ***
+                #bpm = uniform(self.bpm_sim * (1 - random[0] / 100),
+                #              self.bpm_sim * (1 + random[0] / 100))
+                bpm = self.bpm_sim
+                pk = uniform(self.peak_sim * (1 - random[1] / 100),
+                             self.peak_sim * (1 + random[1] / 100))
+                peep = uniform(self.peep_sim * (1 - random[2] / 100),
+                               self.peep_sim * (1 + random[2] / 100))
+                self.scale(bpm, pk, peep, regenerate=True)
+
+        sample = time % self.max_time  # scale to data model time
+        xinterp = np.interp(sample, self.breath[:, 0], self.breath[:, 1])
+        self.prev_sample = time  # track last point
         return xinterp
 
 
 if __name__ == "__main__":
+
+    seconds = 9
+    delay = 0.010  # sample delay
+    timer = 0
+    data = []
+
     br = BREATH()
-    br.plot_breath()
     br.scale()
-    br.plot_breath()
-    br.get_simulated_data(1)
+
+    # loop to sample data
+    print("Sampling sensor for {}s".format(seconds))
+    while timer < seconds:
+        time.sleep(delay)  # wait for sample
+        data.append([timer, br.get_simulated_data(timer, random=[0, 10, 10])])
+        timer = timer + delay
+    fig = plt.figure()
+    ax1 = fig.add_subplot(1, 1, 1)
+
+    xar = []
+    yar = []
+    for eachLine in data:
+        if len(eachLine) > 1:
+            x, y = eachLine[0], eachLine[1]
+            xar.append(float(x))
+            yar.append(float(y))
+    ax1.plot(xar, yar)
+    plt.show()
