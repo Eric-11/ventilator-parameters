@@ -9,6 +9,8 @@ Licensed under GNU GPL-3. You have the freedom to do whatever with this code exc
 # Model.py
 model.py loads the selected numerical values from the ./models/ folder.  It can also scale and will simulate a live sensor. At this point no radomization has been added to the model, but it will be added soon. Also there are only two models, one well behaved and one with large peak vs. plateau values.
 
+*Now has the ability to specify some randomness in the peak and peep values between breaths just to test the algorithm. On the model "b40-peep0-30s.csv" that is irregular occasionally the plateau is missed which is something I'm still fine tuning.*
+
 # Monitor.py
 This performs all the sampling from model.py and will then parse, compute and display the results. It can be plotted using matplotlib or the results are printed to the console using pprint library.
 
@@ -53,7 +55,7 @@ All the documentation is embedded in the code for speed. There are a lot of arra
 # Example Test runs of monitor.py
 Using ./models/b40-peep0-30s.csv
 
-![model test](/snapshots/figure_1-2.png)
+![model test](/snapshots/model2.png)
 
 `Setting up model.
 Model rate BPM = 30.0, Model Peak Pressure = 31.0 cm H2O
@@ -114,7 +116,7 @@ Sampling sensor for 7s
   And model ./models/b40-peep0-30s.csv
   
   
-![model test2](/snapshots/figure_1-1.png)
+![model test2](/snapshots/model1.png)
   
 `Setting up model.
 Model rate BPM = 30.0, Model Peak Pressure = 31.0 cm H2O
