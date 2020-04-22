@@ -45,7 +45,7 @@ This performs all the sampling from model.py and will then parse, compute and di
 
 * Measures the following signals:  
  * PEEP: PEEP pressure
- * PEEPi: Intrinsic PEEP presure
+ * PEEPi: Intrinsic PEEP pressure
  * Ppeak: Peak pressure
  * FlowI: Inspiratory inflow time
  * Ipause: Inspiry pause time
@@ -67,8 +67,10 @@ This performs all the sampling from model.py and will then parse, compute and di
 * The plots are shown to aid in understanding the methods used to compute the parameters
 
 # How to Run It
-Just unzip or clone the repository.  You'll need matplotlib, numpy and pprint libraries (sorry no time for setup.py files, etc.).  For a test run just issue
+Just unzip or clone the repository.  You'll need matplotlib, numpy and pprint libraries (sorry no time for setup.py files, etc.).  For a test run just issue:
 
+python3 monitor2.py
+or
 python3 monitor.py
 
 You can then modify the models or explore the calculations on your own. Feedback welcome, but the code is neither elegant or complete at this point.
