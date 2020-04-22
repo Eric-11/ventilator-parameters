@@ -1,10 +1,19 @@
 # ventilator-parameters
-Numerical model to simulate ventilator airway pressures and extract key parameters using simple methods that should not be too resource intensive. This code is non-optimized and is currently in a proof-of-concept testing stage.
+Two numerical models and utilities to simulate ventilator airway pressures and extract key parameters using simple methods that should not be too resource intensive. This code is non-optimized and is currently in a proof-of-concept testing stage. Yes there are plenty of bugs.
 
 This is a rapid prototype using python3 to process sample data from a differential pressure gauge and compute some of the values. This simulation is based on model data found on the internet and extracted to csv files. These models are setup to be scaled easily for peak, respiration rate, and peep values.
 
 ## licence
 Licensed under GNU GPL-3. You have the freedom to do whatever with this code except distribute it in closed source versions.
+
+# model2.py and monitor2.py
+This updated code uses real ventilator data found in /models/csv_raw that has been quantized at 50 Hz (may not be accurate) for testing against live data. There are a variety of methods inside monitor2.py however at the moment it is configured to scan one pressure file, average the breath cycle times found there, then flag irregular cycles (> +/-25%) and list their time indexs and breath numbers counting from the beginning of the file.
+
+It then loops through the list of irregular cycles, plots them and computes parameters. This was devised as a test for waveform detection and parameter computation.  It plots the data found and creates a running text list of computed values which it prints after every plot is viewed and closed.
+
+monitor2.py is a re-write of the algorithm in more readable code and the plot also includes a sub-plot of the differential of each detected cycle to assist in visually checking the algorithm.  Here is an example from monitor2.py:
+
+![monitor2.py](/snapshots/monitor2.png)
 
 # plot_data.py
 plot_data.py will read pressure or flow data from the cvs files as if it was live and display sweeps across the screen. It's just a visualization tool right now but it will be integrated soon into the algorithm.  However it is a good way to browse the data files. You can speed up the sweeps by changing the interval parameter or you can modify the code to seek for spots further into the csv file.  Here's an example run for pressure and flow on raw ventilator data from https://github.com/hahnicity/ventmode/tree/master/anon_test_data/raw_vwd
