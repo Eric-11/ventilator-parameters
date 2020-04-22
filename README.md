@@ -34,7 +34,7 @@ Older version of modeling, model.py loads the selected numerical values from the
 
 *Now has the ability to specify some randomness in the peak and peep values between breaths just to test the algorithm. On the model "b40-peep0-30s.csv" that is irregular occasionally the plateau is missed which is something I'm still fine tuning.*
 
-Thanks to https://github.com/hahnicity/ventmode we now have some real pressure and flow data. The models are in /models/raw_cvs and is the same data used in their paper: "Improving Mechanical Ventilator Clinical Decision Support Systems with a Machine Learning Classifier for Determining Ventilator Mode." by Rehm, Gregory B and Kuhn, Brooks T and Nguyen, Jimmy and Anderson, Nicholas R and Chuah, Chen Nee and Adams, Jason Yeates.
+Thanks to https://github.com/hahnicity/ventmode we now have some real pressure and flow data. The model data is in /models/cvs_raw and is the same data used in their paper: "Improving Mechanical Ventilator Clinical Decision Support Systems with a Machine Learning Classifier for Determining Ventilator Mode." by Rehm, Gregory B and Kuhn, Brooks T and Nguyen, Jimmy and Anderson, Nicholas R and Chuah, Chen Nee and Adams, Jason Yeates.  The cvs_raw files have been converted to a flow and a pressure file with time indexing to follow the previous early model design.
 
 This new dataset is used in model2.py and monitor2.py. Bot model.py and monitor.py rely on the older single breath patterns that were generated from images.
 
