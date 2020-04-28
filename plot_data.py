@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-Plots either raw_vmd or csv_raw files.
+Plots either raw_vwd or csv_raw files.
 """
 import numpy as np
 import matplotlib
@@ -43,18 +43,20 @@ class PlotData:
             plt.title("Pressure")
             plt.ylabel("cm H2O")
             plt.ylim(0, self.y_limit)
-            self.cursor, = self.ax.plot([0, 0], [0, self.y_limit], color=(0.4, 1., 0.))
+            self.cursor, = self.ax.plot([0, 0], [0, self.y_limit],
+                                        color=(0.4, 1., 0.))
         else:
             plt.title("Flow")
             plt.ylabel("ml/s ?")
             plt.ylim(-self.y_limit, self.y_limit)
-            self.cursor, = self.ax.plot([0, 0], [-self.y_limit, self.y_limit], color=(0.4, 1., 0.))
+            self.cursor, = self.ax.plot([0, 0], [-self.y_limit, self.y_limit],
+                                        color=(0.4, 1., 0.))
 
         self.bins = np.linspace(0, self.limit - 1, self.limit)
         self.value = [0] * self.limit
         self.line, = self.ax.plot(self.bins, self.value, 'r-')
 
-        ani = animation.FuncAnimation(self.fig, self.animate, interval=50)
+        ani = animation.FuncAnimation(self.fig, self.animate, interval=1)
         plt.show()
 
     def animate(self, i):
@@ -106,7 +108,6 @@ class PlotData:
                 continue
             data_bad = False
 
-
         if self.raw_file:
             if self.type == 'press':
                 p = x[1]
@@ -125,7 +126,8 @@ class PlotData:
             self.cursor.set_data([i, i], [0, self.y_limit])  # move cursor line
         else:
             plt.ylim(-self.y_limit, self.y_limit)  # rescale bigger
-            self.cursor.set_data([i, i], [-self.y_limit, self.y_limit])  # move cursor line
+            self.cursor.set_data(
+                [i, i], [-self.y_limit, self.y_limit])  # move cursor line
 
         self.value[i] = p
         self.line.set_data(self.bins, self.value)  # update the data.
@@ -133,8 +135,9 @@ class PlotData:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Plot raw_vmd or cvs_raw pressure or flow data',
-                                     epilog='Demonstration of data plots')
+    parser = argparse.ArgumentParser(
+        description='Plot raw_vmd or csv_raw pressure or flow data',
+        epilog='Demonstration of data plots')
     parser.add_argument('-p', action='count', default=0, help='plot pressure')
     parser.add_argument('-f', action='count', default=0, help='plot flow rate')
     parser.add_argument('file', type=str, help="Input Filename with path")

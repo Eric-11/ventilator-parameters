@@ -727,7 +727,7 @@ class MONITOR2:
                     
 if __name__ == "__main__":
 
-    file = '0-pres-2d3b45b3bd2d41129c1fbda1257088fa-rpi25-2192-07-15-04-43-37.102116.csv'
+    file = '0-pres-c381f37ef559435eac162bd44904f412-rpi2-2141-11-28-07-59-42.014144.csv'
     filename = Path.cwd() / 'models' / 'csv_raw' / file
 
     mon = MONITOR2(str(filename))
@@ -745,7 +745,7 @@ if __name__ == "__main__":
     print("Looking for irregular breating intervals")
     print("CTRL-C to stop looping through data")
     
-    markers = mon.count_breaths(timeout=300, threshold=12)
+    markers = mon.count_breaths(timeout=300, threshold=14)
     irregs = mon.find_irregular_cycles(markers)
     for i in range(0, len(irregs)):
         print("{}: BN={} - {} irregs".format(i, irregs[i][2], irregs[i]))
